@@ -102,8 +102,50 @@ export function createHelpModal() {
                 <tr><td><kbd>H</kbd> / <kbd>?</kbd></td><td>${t('showHelp')}</td></tr>
             </table>
             
-            <h3>${t('gameRules')}</h3>
-            <p>${t('gameRulesText')} <a href="https://github.com/adamshostack/eop" target="_blank">${t('eopGame')}</a>.</p>
+            <h3>${t('gameRulesHeading')}</h3>
+            
+            <h4>${t('setupHeading')}</h4>
+            <ol>
+                <li>${t('setupRule1')}</li>
+                <li>${t('setupRule2')}</li>
+                <li>${t('setupRule3')}</li>
+            </ol>
+            
+            <h4>${t('takingTurnsHeading')}</h4>
+            <ul>
+                <li>${t('turnRule1')}</li>
+                <li>${t('turnRule2')}</li>
+                <li>${t('turnRule3')}</li>
+                <li><strong>${t('turnRule4')}</strong></li>
+            </ul>
+            
+            <h4>${t('playingCardHeading')}</h4>
+            <ol>
+                <li>${t('playRule1')}</li>
+                <li>${t('playRule2')}</li>
+                <li>${t('playRule3')}</li>
+                <li>${t('playRule4')}</li>
+            </ol>
+            
+            <h4>${t('scoringHeading')}</h4>
+            <p><strong>${t('scoringPoints')}</strong></p>
+            <ul>
+                <li>${t('scoreRule1')}</li>
+                <li>${t('scoreRule2')}</li>
+            </ul>
+            <p><strong>${t('scoringThreat')}</strong></p>
+            <ul>
+                <li>${t('threatRule1')}</li>
+                <li>${t('threatRule2')}</li>
+            </ul>
+            
+            <h4>${t('specialCardsHeading')}</h4>
+            <ul>
+                <li><strong>${t('trumpCards')}</strong> ${t('trumpRule')}</li>
+                <li><strong>${t('aceCards')}</strong> ${t('aceRule')}</li>
+            </ul>
+            
+            <p style="margin-top: 1rem;"><em>${t('moreInfo')} <a href="https://github.com/adamshostack/eop" target="_blank">${t('eopGame')}</a>.</em></p>
             
             <button onclick="closeHelpModal()" class="primary-btn">${t('gotIt')}</button>
         </div>

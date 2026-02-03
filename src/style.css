@@ -399,9 +399,22 @@ kbd {
     color: #2c3e50;
 }
 
+.modal-content h4 {
+    margin-top: 15px;
+    margin-bottom: 8px;
+    color: #34495e;
+    font-size: 1em;
+}
+
 .modal-content ul {
     text-align: left;
     line-height: 1.8;
+}
+
+.modal-content ol {
+    text-align: left;
+    line-height: 1.8;
+    padding-left: 20px;
 }
 
 .shortcuts-table {
