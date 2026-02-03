@@ -39,13 +39,23 @@ export function updateUILanguage() {
     const sizeLarge = document.getElementById('size-large');
     const sizeXLarge = document.getElementById('size-xlarge');
     
-    if (sizeSmall) sizeSmall.textContent = t('small');
-    if (sizeMedium) sizeMedium.textContent = t('medium');
-    if (sizeLarge) sizeLarge.textContent = t('large');
-    if (sizeXLarge) sizeXLarge.textContent = t('xlarge');
+    if (sizeSmall) {
+        sizeSmall.textContent = t('small');
+    }
+    if (sizeMedium) {
+        sizeMedium.textContent = t('medium');
+    }
+    if (sizeLarge) {
+        sizeLarge.textContent = t('large');
+    }
+    if (sizeXLarge) {
+        sizeXLarge.textContent = t('xlarge');
+    }
     
     const helpBtn = document.querySelector('.help-btn');
-    if (helpBtn) helpBtn.title = t('helpTitle');
+    if (helpBtn) {
+        helpBtn.title = t('helpTitle');
+    }
     
     const backBtns = document.querySelectorAll('.small-btn');
     backBtns.forEach(btn => {

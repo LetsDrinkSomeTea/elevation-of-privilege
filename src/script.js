@@ -4,7 +4,7 @@
  */
 
 import { suits, buildDeck, valueOrder } from './deck.js';
-import { hashCode, shuffle, validatePlayerCount, validateSeed, getUrlParams as getParams } from './utils.js';
+import { shuffle, validatePlayerCount, validateSeed, getUrlParams as getParams } from './utils.js';
 import { initLanguage, t, toggleLanguage, getCurrentLanguage } from './translations.js';
 import { updateCardCounter, updateUILanguage, showHelpModal, closeHelpModal } from './ui.js';
 
@@ -15,7 +15,6 @@ const allCards = buildDeck();
 const STORAGE_KEY_PREFIX = 'eop_played_';
 let currentPlayerKey = '';
 let selectedCardIndex = 0;
-let playerCards = [];
 
 // Make functions globally available for onclick handlers
 window.toggleLanguage = toggleLanguage;
@@ -82,7 +81,9 @@ function renderHostCards(cards, container) {
     });
 
     suits.forEach(suit => {
-        if (grouped[suit.code].length === 0) return;
+        if (grouped[suit.code].length === 0) {
+            return;
+        }
         
         const suitDiv = document.createElement('div');
         suitDiv.className = 'suit-group';
@@ -165,11 +166,12 @@ function initPlayerView() {
     let myHand = shuffledDeck.slice(start, end);
 
     myHand.sort((a, b) => {
-        if (a.suit !== b.suit) return a.suit.localeCompare(b.suit);
+        if (a.suit !== b.suit) {
+            return a.suit.localeCompare(b.suit);
+        }
         return valueOrder[a.value] - valueOrder[b.value];
     });
 
-    playerCards = myHand;
     const container = document.getElementById('cards-container');
     renderPlayerCards(myHand, container);
     updateCounter();
@@ -198,7 +200,7 @@ function renderPlayerCards(cards, container) {
     });
 }
 
-function playerCardClicked(element, cardId) {
+function playerCardClicked(element) {
     element.classList.toggle('played');
     savePlayedState();
     updateCounter();
@@ -208,7 +210,9 @@ function playerCardClicked(element, cardId) {
 function setupKeyboardNavigation() {
     document.addEventListener('keydown', (e) => {
         const cards = document.querySelectorAll('.card-player');
-        if (cards.length === 0) return;
+        if (cards.length === 0) {
+            return;
+        }
         
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
             return;
@@ -252,7 +256,9 @@ function savePlayedState() {
 
 function restorePlayedCards() {
     const saved = localStorage.getItem(currentPlayerKey);
-    if (!saved) return;
+    if (!saved) {
+        return;
+    }
     
     try {
         const playedCards = JSON.parse(saved);
