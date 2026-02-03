@@ -28,34 +28,31 @@ suits.forEach(s => {
 
 // --- HELPER FUNKTIONEN ---
 
-function cyrb128(str) {
-    let h1 = 1779033703, h2 = 3144134277, h3 = 1013904242, h4 = 27644437;
-    for (let i = 0, k; i < str.length; i++) {
-        k = str.charCodeAt(i);
-        h1 = h2 ^ Math.imul(h1 ^ k, 597399067);
-        h2 = h3 ^ Math.imul(h2 ^ k, 2869860233);
-        h3 = h4 ^ Math.imul(h3 ^ k, 951274213);
-        h4 = h1 ^ Math.imul(h4 ^ k, 2716044179);
+function hashCode(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
     }
-    h1 = Math.imul(h3 ^ (h1 >>> 18), 597399067);
-    h2 = Math.imul(h4 ^ (h2 >>> 22), 2869860233);
-    h3 = Math.imul(h1 ^ (h3 >>> 17), 951274213);
-    h4 = Math.imul(h2 ^ (h4 >>> 19), 2716044179);
+    return Math.abs(hash);
+}
+
+function seededRandom(seed) {
+    let state = seed;
     return function() {
-        let t = (h1 ^ h2 ^ h3 ^ h4) >>> 0; 
-        h1 = h2; h2 = h3; h3 = h4; h4 = t;
-        return (t >>> 0) / 4294967296;
-    }
+        state = (state * 9301 + 49297) % 233280;
+        return state / 233280;
+    };
 }
 
 function shuffle(array, seed) {
-    let rng = cyrb128(seed);
-    let m = array.length, t, i;
-    while (m) {
-        i = Math.floor(rng() * m--);
-        t = array[m];
-        array[m] = array[i];
-        array[i] = t;
+    const seedNum = hashCode(seed);
+    const rng = seededRandom(seedNum);
+    
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
 }
@@ -159,10 +156,19 @@ function initPlayerView() {
     // Deck mischen
     let shuffledDeck = shuffle([...allCards], seed);
     
-    // Karten austeilen
-    const cardsPerPlayer = Math.floor(shuffledDeck.length / players);
-    const start = (player - 1) * cardsPerPlayer;
-    const end = (player === players) ? shuffledDeck.length : start + cardsPerPlayer;
+    // Karten fair austeilen
+    const totalCards = shuffledDeck.length;
+    const baseCards = Math.floor(totalCards / players);
+    const extraCards = totalCards % players;
+    
+    // Spieler 1 bis extraCards bekommen baseCards + 1
+    // Restliche Spieler bekommen baseCards
+    let start = 0;
+    for (let i = 1; i < player; i++) {
+        start += (i <= extraCards) ? baseCards + 1 : baseCards;
+    }
+    const myCardCount = (player <= extraCards) ? baseCards + 1 : baseCards;
+    const end = start + myCardCount;
     
     let myHand = shuffledDeck.slice(start, end);
     
