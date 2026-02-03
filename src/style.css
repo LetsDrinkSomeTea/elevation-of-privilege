@@ -1,39 +1,13 @@
-/* CSS Variables for theming */
-:root {
-    --bg-primary: #f0f2f5;
-    --bg-secondary: white;
-    --bg-tertiary: #f8f9fa;
-    --text-primary: #333;
-    --text-secondary: #2c3e50;
-    --text-muted: #777;
-    --border-color: #ccc;
-    --shadow: rgba(0,0,0,0.1);
-    --shadow-hover: rgba(0,0,0,0.15);
-}
-
-[data-theme="dark"] {
-    --bg-primary: #1a1a1a;
-    --bg-secondary: #2d2d2d;
-    --bg-tertiary: #383838;
-    --text-primary: #e0e0e0;
-    --text-secondary: #ffffff;
-    --text-muted: #a0a0a0;
-    --border-color: #555;
-    --shadow: rgba(0,0,0,0.3);
-    --shadow-hover: rgba(0,0,0,0.5);
-}
-
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--bg-primary);
+    background: #f0f2f5;
     padding: 20px;
     text-align: center;
-    color: var(--text-primary);
-    transition: background 0.3s ease, color 0.3s ease;
+    color: #333;
 }
 
-h1 { margin-bottom: 20px; color: var(--text-secondary); }
-h2 { color: var(--text-secondary); }
+h1 { margin-bottom: 20px; color: #2c3e50; }
+h2 { color: #2c3e50; }
 h3 { margin: 10px 0; }
 
 /* Admin Setup */
@@ -43,23 +17,23 @@ h3 { margin: 10px 0; }
 }
 
 .controls {
-    background: var(--bg-secondary);
+    background: white;
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 4px 15px var(--shadow);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     margin-bottom: 30px;
 }
 
 #links-container {
-    background: var(--bg-secondary);
+    background: white;
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 4px 15px var(--shadow);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     text-align: left;
 }
 
 .link-box {
-    background: var(--bg-tertiary);
+    background: #f8f9fa;
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 15px;
@@ -84,11 +58,11 @@ input[type="text"], input[type="number"] {
     padding: 10px;
     font-size: 16px;
     border-radius: 5px;
-    border: 1px solid var(--border-color);
+    border: 1px solid #ccc;
     width: 80%;
     margin-bottom: 10px;
-    background: var(--bg-secondary);
-    color: var(--text-primary);
+    background: white;
+    color: #333;
 }
 
 button, .primary-btn {
@@ -163,13 +137,13 @@ button.copied {
 
 .card {
     width: 320px;
-    border: 1px solid var(--border-color);
+    border: 1px solid #000;
     border-radius: 8px;
-    background: var(--bg-secondary);
+    background: white;
     cursor: pointer;
     position: relative;
     transition: transform 0.2s, opacity 0.3s, width 0.3s, height 0.3s;
-    box-shadow: 0 2px 5px var(--shadow);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -177,7 +151,7 @@ button.copied {
 
 .card:hover { 
     transform: translateY(-5px); 
-    box-shadow: 0 8px 20px var(--shadow-hover); 
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
 }
 
 .card img { 
@@ -243,14 +217,14 @@ button.copied {
 .card-compact {
     width: 80px;
     height: 110px;
-    border: 1px solid var(--border-color);
+    border: 1px solid #000;
     border-radius: 6px;
-    background: var(--bg-secondary);
+    background: white;
     cursor: pointer;
     position: relative;
     overflow: hidden;
     transition: transform 0.2s, opacity 0.3s;
-    box-shadow: 0 2px 4px var(--shadow);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -259,7 +233,7 @@ button.copied {
 
 .card-compact:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 15px var(--shadow-hover);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
 }
 
 .card-compact img {
@@ -324,7 +298,7 @@ button.copied {
 
 .instruction-text {
     margin-top: 30px;
-    color: var(--text-muted);
+    color: #777;
     font-size: 0.9em;
 }
 
@@ -353,8 +327,8 @@ button.copied {
 
 /* Keyboard Hint */
 kbd {
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
+    background: #f8f9fa;
+    border: 1px solid #ccc;
     border-radius: 3px;
     padding: 2px 6px;
     font-family: monospace;
@@ -382,8 +356,8 @@ kbd {
 }
 
 .modal-content {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
+    background: white;
+    color: #333;
     padding: 30px;
     border-radius: 12px;
     max-width: 600px;
@@ -405,13 +379,13 @@ kbd {
     top: 15px;
     right: 20px;
     font-size: 35px;
-    color: var(--text-muted);
+    color: #999;
     cursor: pointer;
     transition: color 0.2s;
 }
 
 .modal-close:hover {
-    color: var(--text-primary);
+    color: #333;
 }
 
 .modal-content h2 {
@@ -422,7 +396,7 @@ kbd {
 .modal-content h3 {
     margin-top: 20px;
     margin-bottom: 10px;
-    color: var(--text-secondary);
+    color: #2c3e50;
 }
 
 .modal-content ul {
@@ -438,7 +412,7 @@ kbd {
 
 .shortcuts-table td {
     padding: 10px;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid #ddd;
 }
 
 .shortcuts-table td:first-child {
@@ -452,13 +426,9 @@ kbd {
     outline-offset: 4px;
 }
 
-/* Smooth transitions for theme changes */
-*, *::before, *::after {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
+/* Smooth transitions */
 .card, .card img {
-    transition: transform 0.2s, opacity 0.3s, filter 0.3s, background-color 0.3s ease !important;
+    transition: transform 0.2s, opacity 0.3s, filter 0.3s !important;
 }
 
 /* Mobile responsiveness improvements */

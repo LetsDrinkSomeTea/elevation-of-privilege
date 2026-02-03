@@ -204,7 +204,6 @@ function closeOverlay() {
 
 // Storage keys for persistence
 const STORAGE_KEY_PREFIX = 'eop_played_';
-const STORAGE_KEY_THEME = 'eop_theme';
 let currentPlayerKey = '';
 let selectedCardIndex = 0;
 let playerCards = [];
@@ -310,6 +309,11 @@ function setupKeyboardNavigation() {
         const cards = document.querySelectorAll('.card-player');
         if (cards.length === 0) return;
         
+        // Don't interfere if user is typing in an input field
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            return;
+        }
+        
         let handled = false;
         
         if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
@@ -321,20 +325,13 @@ function setupKeyboardNavigation() {
             selectedCardIndex = (selectedCardIndex - 1 + cards.length) % cards.length;
             handled = true;
         } else if (e.key === ' ' || e.key === 'Enter') {
-            if (document.activeElement === document.body || 
-                document.activeElement.classList.contains('card-player')) {
-                e.preventDefault();
-                const cardId = cards[selectedCardIndex].getAttribute('data-card-id');
-                playerCardClicked(cards[selectedCardIndex], cardId);
-                handled = true;
-            }
+            e.preventDefault();
+            const cardId = cards[selectedCardIndex].getAttribute('data-card-id');
+            playerCardClicked(cards[selectedCardIndex], cardId);
+            handled = true;
         } else if (e.key === 'h' || e.key === 'H' || e.key === '?') {
             e.preventDefault();
             showHelpModal();
-            handled = true;
-        } else if (e.key === 'd' || e.key === 'D') {
-            e.preventDefault();
-            toggleTheme();
             handled = true;
         }
         
@@ -395,28 +392,6 @@ function updateCardCounter() {
 }
 
 /**
- * Toggles between light and dark theme
- */
-function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem(STORAGE_KEY_THEME, newTheme);
-}
-
-/**
- * Initializes theme based on system preference or saved preference
- */
-function initTheme() {
-    const savedTheme = localStorage.getItem(STORAGE_KEY_THEME);
-    if (savedTheme) {
-        document.documentElement.setAttribute('data-theme', savedTheme);
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-    }
-}
-
-/**
  * Shows the help modal with game instructions and keyboard shortcuts
  */
 function showHelpModal() {
@@ -466,7 +441,6 @@ function createHelpModal() {
                 <tr><td><kbd>←</kbd> / <kbd>→</kbd></td><td>Navigate between cards</td></tr>
                 <tr><td><kbd>↑</kbd> / <kbd>↓</kbd></td><td>Navigate between cards</td></tr>
                 <tr><td><kbd>H</kbd> / <kbd>?</kbd></td><td>Show this help</td></tr>
-                <tr><td><kbd>D</kbd></td><td>Toggle dark mode</td></tr>
             </table>
             
             <h3>Game Rules</h3>
@@ -500,10 +474,8 @@ function setCardSize(size) {
     localStorage.setItem('cardSize', size);
 }
 
-// Load saved size preference and initialize theme
+// Load saved size preference
 window.addEventListener('DOMContentLoaded', () => {
-    initTheme();
-    
     const savedSize = localStorage.getItem('cardSize') || 'medium';
     if (window.location.pathname.includes('player.html')) {
         // Wait for cards to be rendered, then apply size
