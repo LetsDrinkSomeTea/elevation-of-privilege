@@ -266,7 +266,6 @@ function renderPlayerCards(cards, container) {
         div.setAttribute('data-card-index', index);
         div.setAttribute('tabindex', '0');
         div.onclick = () => playerCardClicked(div, card.id);
-        div.onkeydown = (e) => handleCardKeyPress(e, div, card.id);
 
         div.innerHTML = `
             <img src="img/${card.filename}" 
@@ -292,16 +291,6 @@ function playerCardClicked(element, cardId) {
 }
 
 /**
- * Handles keyboard press on cards
- */
-function handleCardKeyPress(e, element, cardId) {
-    if (e.key === ' ' || e.key === 'Enter') {
-        e.preventDefault();
-        playerCardClicked(element, cardId);
-    }
-}
-
-/**
  * Sets up global keyboard navigation
  */
 function setupKeyboardNavigation() {
@@ -314,37 +303,33 @@ function setupKeyboardNavigation() {
             return;
         }
         
-        let handled = false;
-        
         if (e.key === 'ArrowRight') {
             e.preventDefault();
             selectedCardIndex = (selectedCardIndex + 1) % cards.length;
             cards[selectedCardIndex].focus();
             cards[selectedCardIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
-            handled = true;
         } else if (e.key === 'ArrowLeft') {
             e.preventDefault();
             selectedCardIndex = (selectedCardIndex - 1 + cards.length) % cards.length;
             cards[selectedCardIndex].focus();
             cards[selectedCardIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
-            handled = true;
         } else if (e.key === ' ' || e.key === 'Enter') {
             e.preventDefault();
-            // Update selectedCardIndex based on currently focused card if any
+            
+            // Find the currently focused card
             const focusedCard = document.activeElement;
             if (focusedCard && focusedCard.classList.contains('card-player')) {
-                const focusedIndex = parseInt(focusedCard.getAttribute('data-card-index'));
-                if (!isNaN(focusedIndex)) {
-                    selectedCardIndex = focusedIndex;
-                }
+                // Toggle the focused card directly
+                const cardId = focusedCard.getAttribute('data-card-id');
+                playerCardClicked(focusedCard, cardId);
+            } else {
+                // No card focused, use the tracked index
+                const cardId = cards[selectedCardIndex].getAttribute('data-card-id');
+                playerCardClicked(cards[selectedCardIndex], cardId);
             }
-            const cardId = cards[selectedCardIndex].getAttribute('data-card-id');
-            playerCardClicked(cards[selectedCardIndex], cardId);
-            handled = true;
         } else if (e.key === 'h' || e.key === 'H' || e.key === '?') {
             e.preventDefault();
             showHelpModal();
-            handled = true;
         }
     });
 }
