@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,27 +12,27 @@
         
         <div class="controls">
             <label>Seed:</label>
-            <input type="text" id="seed-input" placeholder="z.B. Workshop2024", value="Workshop2026" >
+            <input type="text" id="seed-input" placeholder="e.g. Workshop2026" value="Workshop2026" >
             <br><br>
             
-            <label>Anzahl Spieler:</label>
+            <label>Number of Players:</label>
             <input type="number" id="players-input" min="2" max="32" value="12">
             <br><br>
             
-            <button onclick="generateLinks()" class="primary-btn">Links generieren</button>
+            <button onclick="generateLinks()" class="primary-btn">Generate Links</button>
         </div>
         
         <div id="links-container" style="display:none;">
             <div style="text-align: right; margin-bottom: 15px;">
-                <button onclick="copyAllLinks()" class="copy-all-btn">📋 Alle Links kopieren</button>
+                <button onclick="copyAllLinks()" class="copy-all-btn">📋 Copy All Links</button>
             </div>
             
-            <h2>Host-Link</h2>
-            <p>Für den Moderator (Bildschirm teilen):</p>
+            <h2>Host Link</h2>
+            <p>For the moderator (screen sharing):</p>
             <div id="host-link"></div>
             
-            <h2>Spieler-Links</h2>
-            <p>Teile diese Links mit den Spielern:</p>
+            <h2>Player Links</h2>
+            <p>Share these links with the players:</p>
             <div id="player-links"></div>
         </div>
     </div>
@@ -44,24 +44,29 @@
             const seed = document.getElementById('seed-input').value;
             const players = document.getElementById('players-input').value;
             
-            if (!seed) {
-                alert('Bitte Seed eingeben');
+            if (!seed || seed.trim().length === 0) {
+                alert('Please enter a seed');
+                return;
+            }
+            
+            if (players < 2 || players > 32) {
+                alert('Please enter a valid number of players (2-32)');
                 return;
             }
             
             const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '');
             
-            // Host-Link
+            // Host Link
             const hostUrl = `${baseUrl}host.html?seed=${encodeURIComponent(seed)}&players=${players}`;
             allLinksData.host = hostUrl;
             document.getElementById('host-link').innerHTML = `
                 <div class="link-box">
                     <a href="${hostUrl}" target="_blank">${hostUrl}</a>
-                    <button onclick="copyToClipboard(this, '${hostUrl}')">Kopieren</button>
+                    <button onclick="copyToClipboard(this, '${hostUrl}')">Copy</button>
                 </div>
             `;
             
-            // Spieler-Links
+            // Player Links
             allLinksData.players = [];
             let playerLinksHtml = '';
             for (let i = 1; i <= players; i++) {
@@ -69,9 +74,9 @@
                 allLinksData.players.push(playerUrl);
                 playerLinksHtml += `
                     <div class="link-box">
-                        <strong>Spieler ${i}:</strong>
+                        <strong>Player ${i}:</strong>
                         <a href="${playerUrl}" target="_blank">${playerUrl}</a>
-                        <button onclick="copyToClipboard(this, '${playerUrl}')">Kopieren</button>
+                        <button onclick="copyToClipboard(this, '${playerUrl}')">Copy</button>
                     </div>
                 `;
             }
@@ -83,21 +88,21 @@
         function copyToClipboard(button, text) {
             navigator.clipboard.writeText(text).then(() => {
                 button.classList.add('copied');
-                button.textContent = '✓ Kopiert';
+                button.textContent = '✓ Copied';
                 setTimeout(() => {
                     button.classList.remove('copied');
-                    button.textContent = 'Kopieren';
+                    button.textContent = 'Copy';
                 }, 2000);
             }).catch(err => {
-                console.error('Fehler beim Kopieren:', err);
+                console.error('Error copying:', err);
             });
         }
         
         function copyAllLinks() {
-            let text = '🎮 Elevation of Privilege - Spiellinks\n\n';
+            let text = '🎮 Elevation of Privilege - Game Links\n\n';
             
             allLinksData.players.forEach((link, index) => {
-                text += `Spieler ${index + 1}: ${link}\n`;
+                text += `Player ${index + 1}: ${link}\n`;
             });
             
             text += `\nHost: ${allLinksData.host}`;
@@ -105,13 +110,13 @@
             const button = event.target;
             navigator.clipboard.writeText(text).then(() => {
                 button.classList.add('copied');
-                button.textContent = '✓ Alle Links kopiert';
+                button.textContent = '✓ All Links Copied';
                 setTimeout(() => {
                     button.classList.remove('copied');
-                    button.textContent = '📋 Alle Links kopieren';
+                    button.textContent = '📋 Copy All Links';
                 }, 2000);
             }).catch(err => {
-                console.error('Fehler beim Kopieren:', err);
+                console.error('Error copying:', err);
             });
         }
     </script>

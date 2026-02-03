@@ -1,29 +1,33 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EoP - Spieler</title>
+    <title>EoP - Player</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
 </head>
 <body>
     <div class="header-bar">
-        <h2 id="view-title">Deine Hand</h2>
+        <h2 id="view-title">Your Hand</h2>
         <div class="size-controls">
-            <span style="font-size: 0.9em; margin-right: 5px;">Kartengröße:</span>
-            <button onclick="setCardSize('small')" class="small-btn size-btn" id="size-small">Klein</button>
-            <button onclick="setCardSize('medium')" class="small-btn size-btn active" id="size-medium">Mittel</button>
-            <button onclick="setCardSize('large')" class="small-btn size-btn" id="size-large">Groß</button>
+            <span style="font-size: 0.9em; margin-right: 5px;">Card Size:</span>
+            <button onclick="setCardSize('small')" class="small-btn size-btn" id="size-small">Small</button>
+            <button onclick="setCardSize('medium')" class="small-btn size-btn active" id="size-medium">Medium</button>
+            <button onclick="setCardSize('large')" class="small-btn size-btn" id="size-large">Large</button>
             <button onclick="setCardSize('xlarge')" class="small-btn size-btn" id="size-xlarge">XL</button>
         </div>
-        <button onclick="window.location.href='index.html'" class="small-btn">Zurück</button>
+        <div class="header-buttons">
+            <button onclick="showHelpModal()" class="small-btn help-btn" title="Help (H)">❓</button>
+            <button onclick="toggleTheme()" class="small-btn theme-btn" title="Toggle Theme (D)">🌓</button>
+            <button onclick="window.location.href='index.html'" class="small-btn">Back</button>
+        </div>
     </div>
     
     <div id="cards-container" class="card-grid"></div>
     
     <p class="instruction-text">
-        Klicke auf eine Karte, um sie als "gespielt" zu markieren.
+        Click or tap a card to mark it as "played". Press <kbd>H</kbd> for help.
     </p>
     
     <script>

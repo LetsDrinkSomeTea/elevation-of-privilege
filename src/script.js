@@ -394,6 +394,92 @@ function updateCardCounter() {
     counter.textContent = `${playedCards} of ${totalCards} played`;
 }
 
+/**
+ * Toggles between light and dark theme
+ */
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem(STORAGE_KEY_THEME, newTheme);
+}
+
+/**
+ * Initializes theme based on system preference or saved preference
+ */
+function initTheme() {
+    const savedTheme = localStorage.getItem(STORAGE_KEY_THEME);
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    }
+}
+
+/**
+ * Shows the help modal with game instructions and keyboard shortcuts
+ */
+function showHelpModal() {
+    let modal = document.getElementById('help-modal');
+    if (!modal) {
+        modal = createHelpModal();
+    }
+    modal.style.display = 'flex';
+}
+
+/**
+ * Closes the help modal
+ */
+function closeHelpModal() {
+    const modal = document.getElementById('help-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+/**
+ * Creates the help modal element
+ */
+function createHelpModal() {
+    const modal = document.createElement('div');
+    modal.id = 'help-modal';
+    modal.className = 'modal';
+    modal.onclick = (e) => {
+        if (e.target === modal) closeHelpModal();
+    };
+    
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeHelpModal()">&times;</span>
+            <h2>Help & Keyboard Shortcuts</h2>
+            
+            <h3>How to Play</h3>
+            <ul>
+                <li>Click or tap a card to mark it as "played"</li>
+                <li>Your played state is automatically saved</li>
+                <li>Use the size controls to adjust card size</li>
+            </ul>
+            
+            <h3>Keyboard Shortcuts</h3>
+            <table class="shortcuts-table">
+                <tr><td><kbd>Space</kbd> / <kbd>Enter</kbd></td><td>Toggle card played state</td></tr>
+                <tr><td><kbd>←</kbd> / <kbd>→</kbd></td><td>Navigate between cards</td></tr>
+                <tr><td><kbd>↑</kbd> / <kbd>↓</kbd></td><td>Navigate between cards</td></tr>
+                <tr><td><kbd>H</kbd> / <kbd>?</kbd></td><td>Show this help</td></tr>
+                <tr><td><kbd>D</kbd></td><td>Toggle dark mode</td></tr>
+            </table>
+            
+            <h3>Game Rules</h3>
+            <p>For complete rules, see the <a href="https://github.com/adamshostack/eop" target="_blank">Elevation of Privilege card game</a>.</p>
+            
+            <button onclick="closeHelpModal()" class="primary-btn">Got it!</button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    return modal;
+}
+
 function setCardSize(size) {
     // Update all cards
     const cards = document.querySelectorAll('.card-player');
@@ -414,8 +500,10 @@ function setCardSize(size) {
     localStorage.setItem('cardSize', size);
 }
 
-// Load saved size preference
+// Load saved size preference and initialize theme
 window.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    
     const savedSize = localStorage.getItem('cardSize') || 'medium';
     if (window.location.pathname.includes('player.html')) {
         // Wait for cards to be rendered, then apply size

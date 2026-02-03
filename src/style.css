@@ -1,13 +1,39 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f0f2f5;
-    padding: 20px;
-    text-align: center;
-    color: #333;
+/* CSS Variables for theming */
+:root {
+    --bg-primary: #f0f2f5;
+    --bg-secondary: white;
+    --bg-tertiary: #f8f9fa;
+    --text-primary: #333;
+    --text-secondary: #2c3e50;
+    --text-muted: #777;
+    --border-color: #ccc;
+    --shadow: rgba(0,0,0,0.1);
+    --shadow-hover: rgba(0,0,0,0.15);
 }
 
-h1 { margin-bottom: 20px; color: #2c3e50; }
-h2 { color: #2c3e50; }
+[data-theme="dark"] {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-tertiary: #383838;
+    --text-primary: #e0e0e0;
+    --text-secondary: #ffffff;
+    --text-muted: #a0a0a0;
+    --border-color: #555;
+    --shadow: rgba(0,0,0,0.3);
+    --shadow-hover: rgba(0,0,0,0.5);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-primary);
+    padding: 20px;
+    text-align: center;
+    color: var(--text-primary);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+h1 { margin-bottom: 20px; color: var(--text-secondary); }
+h2 { color: var(--text-secondary); }
 h3 { margin: 10px 0; }
 
 /* Admin Setup */
@@ -17,23 +43,23 @@ h3 { margin: 10px 0; }
 }
 
 .controls {
-    background: white;
+    background: var(--bg-secondary);
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px var(--shadow);
     margin-bottom: 30px;
 }
 
 #links-container {
-    background: white;
+    background: var(--bg-secondary);
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px var(--shadow);
     text-align: left;
 }
 
 .link-box {
-    background: #f8f9fa;
+    background: var(--bg-tertiary);
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 15px;
@@ -58,9 +84,11 @@ input[type="text"], input[type="number"] {
     padding: 10px;
     font-size: 16px;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     width: 80%;
     margin-bottom: 10px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
 }
 
 button, .primary-btn {
@@ -135,13 +163,13 @@ button.copied {
 
 .card {
     width: 320px;
-    border: 1px solid #000;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    background: white;
+    background: var(--bg-secondary);
     cursor: pointer;
     position: relative;
     transition: transform 0.2s, opacity 0.3s, width 0.3s, height 0.3s;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px var(--shadow);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -149,7 +177,7 @@ button.copied {
 
 .card:hover { 
     transform: translateY(-5px); 
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
+    box-shadow: 0 8px 20px var(--shadow-hover); 
 }
 
 .card img { 
@@ -215,14 +243,14 @@ button.copied {
 .card-compact {
     width: 80px;
     height: 110px;
-    border: 1px solid #000;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
-    background: white;
+    background: var(--bg-secondary);
     cursor: pointer;
     position: relative;
     overflow: hidden;
     transition: transform 0.2s, opacity 0.3s;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px var(--shadow);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -231,7 +259,7 @@ button.copied {
 
 .card-compact:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 15px var(--shadow-hover);
 }
 
 .card-compact img {
@@ -296,6 +324,172 @@ button.copied {
 
 .instruction-text {
     margin-top: 30px;
-    color: #777;
+    color: var(--text-muted);
     font-size: 0.9em;
+}
+
+/* Card Counter */
+.card-counter {
+    padding: 8px 16px;
+    background: #17a2b8;
+    color: white;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9em;
+    margin: 0 10px;
+}
+
+/* Header Buttons */
+.header-buttons {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.help-btn, .theme-btn {
+    font-size: 1.2em;
+    padding: 5px 10px !important;
+}
+
+/* Keyboard Hint */
+kbd {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    position: relative;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 35px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--text-primary);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.modal-content h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+}
+
+.modal-content ul {
+    text-align: left;
+    line-height: 1.8;
+}
+
+.shortcuts-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+}
+
+.shortcuts-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.shortcuts-table td:first-child {
+    font-weight: bold;
+    width: 40%;
+}
+
+/* Card Focus State */
+.card-player:focus {
+    outline: 3px solid #007bff;
+    outline-offset: 4px;
+}
+
+/* Smooth transitions for theme changes */
+*, *::before, *::after {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.card, .card img {
+    transition: transform 0.2s, opacity 0.3s, filter 0.3s, background-color 0.3s ease !important;
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 768px) {
+    .header-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+    
+    .size-controls {
+        justify-content: center;
+    }
+    
+    .header-buttons {
+        justify-content: center;
+    }
+    
+    .card.size-medium { width: 280px; }
+    .card.size-medium img { width: 280px; height: 395px; }
+    
+    .card.size-large { width: 320px; }
+    .card.size-large img { width: 320px; height: 455px; }
+    
+    .modal-content {
+        padding: 20px;
+        max-height: 90vh;
+    }
+    
+    .shortcuts-table td {
+        padding: 8px;
+        font-size: 0.9em;
+    }
 }
