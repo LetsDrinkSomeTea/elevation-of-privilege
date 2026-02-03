@@ -316,16 +316,28 @@ function setupKeyboardNavigation() {
         
         let handled = false;
         
-        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        if (e.key === 'ArrowRight') {
             e.preventDefault();
             selectedCardIndex = (selectedCardIndex + 1) % cards.length;
+            cards[selectedCardIndex].focus();
+            cards[selectedCardIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
             handled = true;
-        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        } else if (e.key === 'ArrowLeft') {
             e.preventDefault();
             selectedCardIndex = (selectedCardIndex - 1 + cards.length) % cards.length;
+            cards[selectedCardIndex].focus();
+            cards[selectedCardIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
             handled = true;
         } else if (e.key === ' ' || e.key === 'Enter') {
             e.preventDefault();
+            // Update selectedCardIndex based on currently focused card if any
+            const focusedCard = document.activeElement;
+            if (focusedCard && focusedCard.classList.contains('card-player')) {
+                const focusedIndex = parseInt(focusedCard.getAttribute('data-card-index'));
+                if (!isNaN(focusedIndex)) {
+                    selectedCardIndex = focusedIndex;
+                }
+            }
             const cardId = cards[selectedCardIndex].getAttribute('data-card-id');
             playerCardClicked(cards[selectedCardIndex], cardId);
             handled = true;
@@ -333,11 +345,6 @@ function setupKeyboardNavigation() {
             e.preventDefault();
             showHelpModal();
             handled = true;
-        }
-        
-        if (handled && (e.key.startsWith('Arrow') || e.key === ' ' || e.key === 'Enter')) {
-            cards[selectedCardIndex].focus();
-            cards[selectedCardIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     });
 }
@@ -439,7 +446,6 @@ function createHelpModal() {
             <table class="shortcuts-table">
                 <tr><td><kbd>Space</kbd> / <kbd>Enter</kbd></td><td>Toggle card played state</td></tr>
                 <tr><td><kbd>←</kbd> / <kbd>→</kbd></td><td>Navigate between cards</td></tr>
-                <tr><td><kbd>↑</kbd> / <kbd>↓</kbd></td><td>Navigate between cards</td></tr>
                 <tr><td><kbd>H</kbd> / <kbd>?</kbd></td><td>Show this help</td></tr>
             </table>
             
