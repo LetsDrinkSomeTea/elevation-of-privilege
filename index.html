@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EoP - Admin Setup</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="admin-container">
+        <h1>Elevation of Privilege - Setup</h1>
+        
+        <div class="controls">
+            <label>Seed (Raum-Name):</label>
+            <input type="text" id="seed-input" placeholder="z.B. Workshop2024" value="Workshop1">
+            <br><br>
+            
+            <label>Anzahl Spieler:</label>
+            <input type="number" id="players-input" min="2" max="20" value="6">
+            <br><br>
+            
+            <button onclick="generateLinks()" class="primary-btn">Links generieren</button>
+        </div>
+        
+        <div id="links-container" style="display:none;">
+            <div style="text-align: right; margin-bottom: 15px;">
+                <button onclick="copyAllLinks()" class="copy-all-btn">📋 Alle Links kopieren</button>
+            </div>
+            
+            <h2>Spieler-Links</h2>
+            <p>Teile diese Links mit den Spielern:</p>
+            <div id="player-links"></div>
+            
+            <h2>Host-Link</h2>
+            <p>Für den Moderator (Bildschirm teilen):</p>
+            <div id="host-link"></div>
+        </div>
+    </div>
+    
+    <script>
+        let allLinksData = { host: '', players: [] };
+        
+        function generateLinks() {
+            const seed = document.getElementById('seed-input').value;
+            const players = document.getElementById('players-input').value;
+            
+            if (!seed) {
+                alert('Bitte Seed eingeben');
+                return;
+            }
+            
+            const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '');
+            
+            // Host-Link
+            const hostUrl = `${baseUrl}host.html?seed=${encodeURIComponent(seed)}&players=${players}`;
+            allLinksData.host = hostUrl;
+            document.getElementById('host-link').innerHTML = `
+                <div class="link-box">
+                    <a href="${hostUrl}" target="_blank">${hostUrl}</a>
+                    <button onclick="copyToClipboard(this, '${hostUrl}')">Kopieren</button>
+                </div>
+            `;
+            
+            // Spieler-Links
+            allLinksData.players = [];
+            let playerLinksHtml = '';
+            for (let i = 1; i <= players; i++) {
+                const playerUrl = `${baseUrl}player.html?seed=${encodeURIComponent(seed)}&players=${players}&player=${i}`;
+                allLinksData.players.push(playerUrl);
+                playerLinksHtml += `
+                    <div class="link-box">
+                        <strong>Spieler ${i}:</strong>
+                        <a href="${playerUrl}" target="_blank">${playerUrl}</a>
+                        <button onclick="copyToClipboard(this, '${playerUrl}')">Kopieren</button>
+                    </div>
+                `;
+            }
+            document.getElementById('player-links').innerHTML = playerLinksHtml;
+            
+            document.getElementById('links-container').style.display = 'block';
+        }
+        
+        function copyToClipboard(button, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                button.classList.add('copied');
+                button.textContent = '✓ Kopiert';
+                setTimeout(() => {
+                    button.classList.remove('copied');
+                    button.textContent = 'Kopieren';
+                }, 2000);
+            }).catch(err => {
+                console.error('Fehler beim Kopieren:', err);
+            });
+        }
+        
+        function copyAllLinks() {
+            let text = '🎮 Elevation of Privilege - Spiellinks\n\n';
+            
+            allLinksData.players.forEach((link, index) => {
+                text += `Spieler ${index + 1}: ${link}\n`;
+            });
+            
+            text += `\nHost: ${allLinksData.host}`;
+            
+            const button = event.target;
+            navigator.clipboard.writeText(text).then(() => {
+                button.classList.add('copied');
+                button.textContent = '✓ Alle Links kopiert';
+                setTimeout(() => {
+                    button.classList.remove('copied');
+                    button.textContent = '📋 Alle Links kopieren';
+                }, 2000);
+            }).catch(err => {
+                console.error('Fehler beim Kopieren:', err);
+            });
+        }
+    </script>
+</body>
+</html>

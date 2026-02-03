@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EoP - Host View</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <div class="header-bar">
+        <h2 id="view-title">HOST VIEW - Alle Karten</h2>
+        <button onclick="window.location.href='index.html'" class="small-btn">Zurück</button>
+    </div>
+    
+    <div id="cards-container" class="card-list-compact"></div>
+    
+    <div id="host-overlay" onclick="closeOverlay()">
+        <span id="close-overlay">&times;</span>
+        <img id="overlay-img" src="" alt="Große Karte">
+        <div id="overlay-text"></div>
+    </div>
+    
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            initHostView();
+        });
+    </script>
+</body>
+</html>
