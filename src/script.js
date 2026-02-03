@@ -121,24 +121,39 @@ function validateSeed(seed) {
  * Initializes the host view with all cards grouped by suit
  */
 function initHostView() {
+    initLanguage();
     const { seed, players } = getUrlParams();
 
     if (!validateSeed(seed)) {
-        alert('Error: No seed found in URL');
+        alert(t('errorNoSeed'));
         window.location.href = 'index.html';
         return;
     }
 
     if (!validatePlayerCount(players)) {
-        alert('Error: Invalid player count. Must be between 2-32 players.');
+        alert(t('errorInvalidPlayers'));
         window.location.href = 'index.html';
         return;
     }
 
-    document.getElementById('view-title').innerText = `HOST VIEW - Seed: ${seed} | ${players} Players`;
+    document.getElementById('view-title').innerText = `${t('hostView')} - ${t('seed')} ${seed} | ${players} ${t('players')}`;
 
     const container = document.getElementById('cards-container');
     renderHostCards(allCards, container);
+    
+    // Update language button
+    const langText = document.getElementById('lang-text');
+    if (langText) {
+        langText.textContent = currentLanguage === 'en' ? 'DE' : 'EN';
+    }
+    
+    // Update back button
+    const backBtns = document.querySelectorAll('.small-btn');
+    backBtns.forEach(btn => {
+        if (btn.textContent.includes('Back') || btn.textContent.includes('Zurück')) {
+            btn.textContent = t('back');
+        }
+    });
 }
 
 function renderHostCards(cards, container) {
@@ -204,25 +219,175 @@ function closeOverlay() {
 
 // Storage keys for persistence
 const STORAGE_KEY_PREFIX = 'eop_played_';
+const STORAGE_KEY_LANGUAGE = 'eop_language';
 let currentPlayerKey = '';
 let selectedCardIndex = 0;
 let playerCards = [];
+
+// Language translations
+const translations = {
+    en: {
+        yourHand: 'Your Hand',
+        cardSize: 'Card Size:',
+        small: 'Small',
+        medium: 'Medium',
+        large: 'Large',
+        xlarge: 'XL',
+        back: 'Back',
+        helpTitle: 'Help (H)',
+        clickToMark: 'Click or tap a card to mark it as "played". Press',
+        forHelp: 'for help.',
+        player: 'Player',
+        of: 'of',
+        seed: 'Seed:',
+        players: 'Players',
+        played: 'played',
+        hostView: 'HOST VIEW',
+        // Help modal
+        helpHeading: 'Help & Keyboard Shortcuts',
+        howToPlayHeading: 'How to Play',
+        howToPlay1: 'Click or tap a card to mark it as "played"',
+        howToPlay2: 'Your played state is automatically saved',
+        howToPlay3: 'Use the size controls to adjust card size',
+        keyboardShortcuts: 'Keyboard Shortcuts',
+        toggleCard: 'Toggle card played state',
+        navigateCards: 'Navigate between cards',
+        showHelp: 'Show this help',
+        gameRules: 'Game Rules',
+        gameRulesText: 'For complete rules, see the',
+        eopGame: 'Elevation of Privilege card game',
+        gotIt: 'Got it!',
+        // Setup page
+        setupTitle: 'Elevation of Privilege - Setup',
+        seedLabel: 'Seed:',
+        seedPlaceholder: 'e.g. Workshop2026',
+        playersLabel: 'Number of Players:',
+        generateLinks: 'Generate Links',
+        copyAllLinks: 'Copy All Links',
+        allLinksCopied: 'All Links Copied',
+        hostLink: 'Host Link',
+        hostLinkDesc: 'For the moderator (screen sharing):',
+        playerLinks: 'Player Links',
+        playerLinksDesc: 'Share these links with the players:',
+        copy: 'Copy',
+        copied: 'Copied',
+        enterSeed: 'Please enter a seed',
+        validPlayers: 'Please enter a valid number of players (2-32)',
+        gameLinks: 'Elevation of Privilege - Game Links',
+        host: 'Host',
+        // Errors
+        errorNoSeed: 'Error: No seed found in URL',
+        errorInvalidPlayers: 'Error: Invalid player count. Must be between 2-32 players.',
+        errorMissingParams: 'Error: Missing or invalid parameters in URL'
+    },
+    de: {
+        yourHand: 'Deine Hand',
+        cardSize: 'Kartengröße:',
+        small: 'Klein',
+        medium: 'Mittel',
+        large: 'Groß',
+        xlarge: 'XL',
+        back: 'Zurück',
+        helpTitle: 'Hilfe (H)',
+        clickToMark: 'Klicke auf eine Karte, um sie als "gespielt" zu markieren. Drücke',
+        forHelp: 'für Hilfe.',
+        player: 'Spieler',
+        of: 'von',
+        seed: 'Seed:',
+        players: 'Spieler',
+        played: 'gespielt',
+        hostView: 'HOST ANSICHT',
+        // Help modal
+        helpHeading: 'Hilfe & Tastaturkürzel',
+        howToPlayHeading: 'Spielanleitung',
+        howToPlay1: 'Klicke oder tippe auf eine Karte, um sie als "gespielt" zu markieren',
+        howToPlay2: 'Dein Spielstatus wird automatisch gespeichert',
+        howToPlay3: 'Verwende die Größensteuerung, um die Kartengröße anzupassen',
+        keyboardShortcuts: 'Tastaturkürzel',
+        toggleCard: 'Kartenstatus umschalten',
+        navigateCards: 'Zwischen Karten navigieren',
+        showHelp: 'Diese Hilfe anzeigen',
+        gameRules: 'Spielregeln',
+        gameRulesText: 'Die vollständigen Regeln findest du im',
+        eopGame: 'Elevation of Privilege Kartenspiel',
+        gotIt: 'Verstanden!',
+        // Setup page
+        setupTitle: 'Elevation of Privilege - Einrichtung',
+        seedLabel: 'Seed:',
+        seedPlaceholder: 'z.B. Workshop2026',
+        playersLabel: 'Anzahl Spieler:',
+        generateLinks: 'Links generieren',
+        copyAllLinks: 'Alle Links kopieren',
+        allLinksCopied: 'Alle Links kopiert',
+        hostLink: 'Host-Link',
+        hostLinkDesc: 'Für den Moderator (Bildschirm teilen):',
+        playerLinks: 'Spieler-Links',
+        playerLinksDesc: 'Teile diese Links mit den Spielern:',
+        copy: 'Kopieren',
+        copied: 'Kopiert',
+        enterSeed: 'Bitte Seed eingeben',
+        validPlayers: 'Bitte gültige Spieleranzahl eingeben (2-32)',
+        gameLinks: 'Elevation of Privilege - Spiellinks',
+        host: 'Host',
+        // Errors
+        errorNoSeed: 'Fehler: Kein Seed in URL gefunden',
+        errorInvalidPlayers: 'Fehler: Ungültige Spieleranzahl. Muss zwischen 2-32 Spielern sein.',
+        errorMissingParams: 'Fehler: Fehlende oder ungültige Parameter in URL'
+    }
+};
+
+let currentLanguage = 'en';
+
+/**
+ * Gets the current language from localStorage or browser preference
+ */
+function initLanguage() {
+    const saved = localStorage.getItem(STORAGE_KEY_LANGUAGE);
+    if (saved && (saved === 'en' || saved === 'de')) {
+        currentLanguage = saved;
+    } else {
+        // Check browser language
+        const browserLang = navigator.language || navigator.userLanguage;
+        currentLanguage = browserLang.startsWith('de') ? 'de' : 'en';
+    }
+    document.documentElement.setAttribute('lang', currentLanguage);
+}
+
+/**
+ * Gets a translated string
+ */
+function t(key) {
+    return translations[currentLanguage][key] || key;
+}
+
+/**
+ * Toggles between English and German
+ */
+function toggleLanguage() {
+    currentLanguage = currentLanguage === 'en' ? 'de' : 'en';
+    localStorage.setItem(STORAGE_KEY_LANGUAGE, currentLanguage);
+    document.documentElement.setAttribute('lang', currentLanguage);
+    
+    // Reload the page to apply translations
+    window.location.reload();
+}
 
 /**
  * Initializes the player view with their hand of cards
  */
 function initPlayerView() {
+    initLanguage();
     const { seed, player, players } = getUrlParams();
 
     if (!validateSeed(seed) || !player || !validatePlayerCount(players)) {
-        alert('Error: Missing or invalid parameters in URL');
+        alert(t('errorMissingParams'));
         window.location.href = 'index.html';
         return;
     }
 
     currentPlayerKey = `${STORAGE_KEY_PREFIX}${seed}_${player}`;
     
-    document.getElementById('view-title').innerText = `Player ${player} of ${players} - Seed: ${seed}`;
+    document.getElementById('view-title').innerText = `${t('player')} ${player} ${t('of')} ${players} - ${t('seed')} ${seed}`;
 
     // Shuffle deck
     let shuffledDeck = shuffle([...allCards], seed);
@@ -256,6 +421,7 @@ function initPlayerView() {
     updateCardCounter();
     restorePlayedCards();
     setupKeyboardNavigation();
+    updateUILanguage();
 }
 
 function renderPlayerCards(cards, container) {
@@ -380,7 +546,51 @@ function updateCardCounter() {
     
     const totalCards = document.querySelectorAll('.card-player').length;
     const playedCards = document.querySelectorAll('.card-player.played').length;
-    counter.textContent = `${playedCards} of ${totalCards} played`;
+    counter.textContent = `${playedCards} ${t('of')} ${totalCards} ${t('played')}`;
+}
+
+/**
+ * Updates UI elements with current language
+ */
+function updateUILanguage() {
+    // Update language button to show the OTHER language (what you'd switch TO)
+    const langText = document.getElementById('lang-text');
+    if (langText) {
+        langText.textContent = currentLanguage === 'en' ? 'DE' : 'EN';
+    }
+    
+    // Update card size buttons
+    const sizeLabels = document.querySelectorAll('.size-controls span');
+    if (sizeLabels.length > 0) {
+        sizeLabels[0].textContent = t('cardSize');
+    }
+    
+    const sizeSmall = document.getElementById('size-small');
+    const sizeMedium = document.getElementById('size-medium');
+    const sizeLarge = document.getElementById('size-large');
+    const sizeXLarge = document.getElementById('size-xlarge');
+    
+    if (sizeSmall) sizeSmall.textContent = t('small');
+    if (sizeMedium) sizeMedium.textContent = t('medium');
+    if (sizeLarge) sizeLarge.textContent = t('large');
+    if (sizeXLarge) sizeXLarge.textContent = t('xlarge');
+    
+    // Update buttons
+    const helpBtn = document.querySelector('.help-btn');
+    if (helpBtn) helpBtn.title = t('helpTitle');
+    
+    const backBtns = document.querySelectorAll('.small-btn');
+    backBtns.forEach(btn => {
+        if (btn.textContent.includes('Back') || btn.textContent.includes('Zurück')) {
+            btn.textContent = t('back');
+        }
+    });
+    
+    // Update instruction text
+    const instructionText = document.querySelector('.instruction-text');
+    if (instructionText) {
+        instructionText.innerHTML = `${t('clickToMark')} <kbd>H</kbd> ${t('forHelp')}`;
+    }
 }
 
 /**
@@ -418,26 +628,26 @@ function createHelpModal() {
     modal.innerHTML = `
         <div class="modal-content">
             <span class="modal-close" onclick="closeHelpModal()">&times;</span>
-            <h2>Help & Keyboard Shortcuts</h2>
+            <h2>${t('helpHeading')}</h2>
             
-            <h3>How to Play</h3>
+            <h3>${t('howToPlayHeading')}</h3>
             <ul>
-                <li>Click or tap a card to mark it as "played"</li>
-                <li>Your played state is automatically saved</li>
-                <li>Use the size controls to adjust card size</li>
+                <li>${t('howToPlay1')}</li>
+                <li>${t('howToPlay2')}</li>
+                <li>${t('howToPlay3')}</li>
             </ul>
             
-            <h3>Keyboard Shortcuts</h3>
+            <h3>${t('keyboardShortcuts')}</h3>
             <table class="shortcuts-table">
-                <tr><td><kbd>Space</kbd> / <kbd>Enter</kbd></td><td>Toggle card played state</td></tr>
-                <tr><td><kbd>←</kbd> / <kbd>→</kbd></td><td>Navigate between cards</td></tr>
-                <tr><td><kbd>H</kbd> / <kbd>?</kbd></td><td>Show this help</td></tr>
+                <tr><td><kbd>Space</kbd> / <kbd>Enter</kbd></td><td>${t('toggleCard')}</td></tr>
+                <tr><td><kbd>←</kbd> / <kbd>→</kbd></td><td>${t('navigateCards')}</td></tr>
+                <tr><td><kbd>H</kbd> / <kbd>?</kbd></td><td>${t('showHelp')}</td></tr>
             </table>
             
-            <h3>Game Rules</h3>
-            <p>For complete rules, see the <a href="https://github.com/adamshostack/eop" target="_blank">Elevation of Privilege card game</a>.</p>
+            <h3>${t('gameRules')}</h3>
+            <p>${t('gameRulesText')} <a href="https://github.com/adamshostack/eop" target="_blank">${t('eopGame')}</a>.</p>
             
-            <button onclick="closeHelpModal()" class="primary-btn">Got it!</button>
+            <button onclick="closeHelpModal()" class="primary-btn">${t('gotIt')}</button>
         </div>
     `;
     

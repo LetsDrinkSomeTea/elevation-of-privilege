@@ -10,7 +10,10 @@
 <body>
     <div class="header-bar">
         <h2 id="view-title">HOST VIEW</h2>
-        <button onclick="window.location.href='index.html'" class="small-btn">Back</button>
+        <div class="header-buttons">
+            <button onclick="toggleLanguage()" class="small-btn lang-btn" title="Switch Language">🌐 <span id="lang-text">DE</span></button>
+            <button onclick="window.location.href='index.html'" class="small-btn">Back</button>
+        </div>
     </div>
     
     <div id="cards-container" class="card-list-compact"></div>
