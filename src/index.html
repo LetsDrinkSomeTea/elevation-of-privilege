@@ -37,7 +37,9 @@
         </div>
     </div>
     
-    <script>
+    <script type="module">
+        import { sanitizeInput } from './utils.js';
+        
         let allLinksData = { host: '', players: [] };
         
         function generateLinks() {
@@ -56,31 +58,38 @@
             
             const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '');
             
-            // Host Link
+            // Host Link (sanitize for display, encode for URL)
             const hostUrl = `${baseUrl}host.html?seed=${encodeURIComponent(seed)}&players=${players}`;
             allLinksData.host = hostUrl;
-            document.getElementById('host-link').innerHTML = `
-                <div class="link-box">
-                    <a href="${hostUrl}" target="_blank">${hostUrl}</a>
-                    <button onclick="copyToClipboard(this, '${hostUrl}')">Copy</button>
-                </div>
+            const hostLink = document.getElementById('host-link');
+            hostLink.innerHTML = '';
+            const hostDiv = document.createElement('div');
+            hostDiv.className = 'link-box';
+            hostDiv.innerHTML = `
+                <a href="${sanitizeInput(hostUrl)}" target="_blank">${sanitizeInput(hostUrl)}</a>
+                <button>Copy</button>
             `;
+            hostDiv.querySelector('button').onclick = () => copyToClipboard(hostDiv.querySelector('button'), hostUrl);
+            hostLink.appendChild(hostDiv);
             
             // Player Links
             allLinksData.players = [];
-            let playerLinksHtml = '';
+            const playerLinks = document.getElementById('player-links');
+            playerLinks.innerHTML = '';
             for (let i = 1; i <= players; i++) {
                 const playerUrl = `${baseUrl}player.html?seed=${encodeURIComponent(seed)}&players=${players}&player=${i}`;
                 allLinksData.players.push(playerUrl);
-                playerLinksHtml += `
-                    <div class="link-box">
-                        <strong>Player ${i}:</strong>
-                        <a href="${playerUrl}" target="_blank">${playerUrl}</a>
-                        <button onclick="copyToClipboard(this, '${playerUrl}')">Copy</button>
-                    </div>
+                
+                const playerDiv = document.createElement('div');
+                playerDiv.className = 'link-box';
+                playerDiv.innerHTML = `
+                    <strong>Player ${i}:</strong>
+                    <a href="${sanitizeInput(playerUrl)}" target="_blank">${sanitizeInput(playerUrl)}</a>
+                    <button>Copy</button>
                 `;
+                playerDiv.querySelector('button').onclick = () => copyToClipboard(playerDiv.querySelector('button'), playerUrl);
+                playerLinks.appendChild(playerDiv);
             }
-            document.getElementById('player-links').innerHTML = playerLinksHtml;
             
             document.getElementById('links-container').style.display = 'block';
         }
@@ -97,6 +106,10 @@
                 console.error('Error copying:', err);
             });
         }
+        
+        // Make functions globally available
+        window.generateLinks = generateLinks;
+        window.copyAllLinks = copyAllLinks;
         
         function copyAllLinks() {
             let text = '🎮 Elevation of Privilege - Game Links\n\n';

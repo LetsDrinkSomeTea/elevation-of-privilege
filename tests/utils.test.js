@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { hashCode, seededRandom, shuffle, validatePlayerCount, validateSeed } from '../src/utils.js';
+import { hashCode, seededRandom, shuffle, validatePlayerCount, validateSeed, sanitizeInput } from '../src/utils.js';
 
 describe('hashCode', () => {
     it('should return the same hash for the same input', () => {
@@ -130,5 +130,29 @@ describe('validateSeed', () => {
         // so we check the function handles them gracefully
         assert.strictEqual(validateSeed(null), false);
         assert.strictEqual(validateSeed(undefined), false);
+    });
+});
+
+describe('sanitizeInput', () => {
+    it('should escape HTML special characters', () => {
+        assert.strictEqual(sanitizeInput('<script>alert("xss")</script>'), '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;');
+        assert.strictEqual(sanitizeInput('<img src=x onerror=alert(1)>'), '&lt;img src=x onerror=alert(1)&gt;');
+    });
+
+    it('should handle quotes and ampersands', () => {
+        assert.strictEqual(sanitizeInput('"test"'), '&quot;test&quot;');
+        assert.strictEqual(sanitizeInput("'test'"), '&#x27;test&#x27;');
+        assert.strictEqual(sanitizeInput('A&B'), 'A&amp;B');
+    });
+
+    it('should handle normal text', () => {
+        assert.strictEqual(sanitizeInput('Workshop2026'), 'Workshop2026');
+        assert.strictEqual(sanitizeInput('test-123_abc'), 'test-123_abc');
+    });
+
+    it('should handle empty or null input', () => {
+        assert.strictEqual(sanitizeInput(''), '');
+        assert.strictEqual(sanitizeInput(null), '');
+        assert.strictEqual(sanitizeInput(undefined), '');
     });
 });

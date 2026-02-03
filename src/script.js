@@ -4,7 +4,7 @@
  */
 
 import { suits, buildDeck, valueOrder } from './deck.js';
-import { shuffle, validatePlayerCount, validateSeed, getUrlParams as getParams } from './utils.js';
+import { shuffle, validatePlayerCount, validateSeed, getUrlParams as getParams, sanitizeInput } from './utils.js';
 import { initLanguage, t, toggleLanguage, getCurrentLanguage } from './translations.js';
 import { updateCardCounter, updateUILanguage, showHelpModal, closeHelpModal } from './ui.js';
 
@@ -54,7 +54,7 @@ function initHostView() {
         return;
     }
 
-    document.getElementById('view-title').innerText = `${t('hostView')} - ${t('seed')} ${seed} | ${players} ${t('players')}`;
+    document.getElementById('view-title').innerText = `${t('hostView')} - ${t('seed')} ${sanitizeInput(seed)} | ${players} ${t('players')}`;
 
     const container = document.getElementById('cards-container');
     renderHostCards(allCards, container);
@@ -148,7 +148,7 @@ function initPlayerView() {
 
     currentPlayerKey = `${STORAGE_KEY_PREFIX}${seed}_${player}`;
     
-    document.getElementById('view-title').innerText = `${t('player')} ${player} ${t('of')} ${players} - ${t('seed')} ${seed}`;
+    document.getElementById('view-title').innerText = `${t('player')} ${player} ${t('of')} ${players} - ${t('seed')} ${sanitizeInput(seed)}`;
 
     let shuffledDeck = shuffle([...allCards], seed);
 

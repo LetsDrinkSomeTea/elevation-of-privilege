@@ -67,6 +67,33 @@ export function validateSeed(seed) {
 }
 
 /**
+ * Sanitizes user input to prevent XSS attacks
+ * Escapes HTML special characters
+ * @param {string} str - The string to sanitize
+ * @returns {string} Sanitized string safe for HTML insertion
+ */
+export function sanitizeInput(str) {
+    if (!str) {
+        return '';
+    }
+    
+    // For Node.js environment (testing), use manual escaping
+    if (typeof document === 'undefined') {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#x27;');
+    }
+    
+    // For browser environment, use DOM API
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+/**
  * Validates URL parameters and returns parsed values
  * @param {URLSearchParams} urlParams - The URL search parameters
  * @returns {Object} Object containing seed, player, and players values
