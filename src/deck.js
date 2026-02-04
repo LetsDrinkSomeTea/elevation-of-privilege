@@ -29,7 +29,7 @@ export const availableCards = {
  */
 export function buildDeck() {
     const deck = [];
-    suits.forEach(s => {
+    suits.sort((a, b) => a.name.localeCompare(b.name)).forEach(s => {
         const values = availableCards[s.code] || [];
         values.forEach(v => {
             deck.push({
@@ -48,7 +48,7 @@ export function buildDeck() {
 /**
  * Card value order for sorting
  */
-export const valueOrder = { 
-    '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 
-    'B': 11, 'D': 12, 'K': 13, 'A': 14 
+export const valueOrder = {
+    '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10,
+    'B': 11, 'D': 12, 'K': 13, 'A': 14
 };
