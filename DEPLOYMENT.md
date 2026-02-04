@@ -6,6 +6,34 @@ This guide covers various deployment options for the Elevation of Privilege card
 
 ## 🐳 Docker Deployment
 
+### Using GitHub Container Registry
+
+The repository includes automated Docker builds (`docker-build.yml`) that publish to GitHub Container Registry (ghcr.io).
+
+**Pull and run:**
+
+```bash
+# Run it
+docker run -d -p 3333:80 ghcr.io/letsdrinksometea/elevation-of-privilege:latest
+
+# Access at http://localhost:3333
+```
+
+**Available tags:**
+
+- `latest` - Latest build from main branch
+- `main` - Latest main branch
+- `1.0.0` - Specific version (from git tags)
+- `sha-abc1234` - Specific commit
+
+### Docker Compose
+
+Use the provided `docker-compose file` and run with:
+
+```bash
+docker compose up -d
+```
+
 ### Quick Start
 
 ```bash
@@ -13,57 +41,9 @@ This guide covers various deployment options for the Elevation of Privilege card
 docker build -t eop-game .
 
 # Run the container
-docker run -d -p 8080:80 --name eop eop-game
+docker run -d -p 3333:80 --name eop eop-game
 
-# Access at http://localhost:8080
-```
-
-### Using GitHub Container Registry
-
-The repository includes automated Docker builds (`docker-build.yml`) that publish to GitHub Container Registry (ghcr.io).
-
-**Pull and run:**
-```bash
-# Pull the latest image
-docker pull ghcr.io/<username>/eop:latest
-
-# Run it
-docker run -d -p 8080:80 ghcr.io/<username>/eop:latest
-```
-
-**Available tags:**
-- `latest` - Latest build from main branch
-- `main` - Latest main branch
-- `v1.0.0` - Specific version (from git tags)
-- `sha-abc1234` - Specific commit
-
-### Docker Compose
-
-Create a `docker-compose.yml`:
-
-```yaml
-version: '3.8'
-
-services:
-  eop:
-    # Use pre-built image from GitHub Container Registry:
-    image: ghcr.io/<username>/eop:latest
-    # OR build locally:
-    # build: .
-    ports:
-      - "8080:80"
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 5s
-```
-
-Run with:
-```bash
-docker-compose up -d
+# Access at http://localhost:3333
 ```
 
 ---
@@ -75,6 +55,7 @@ docker-compose up -d
 This repository includes a GitHub Actions workflow (`jekyll-gh-pages.yml`) that automatically deploys to GitHub Pages.
 
 **Setup:**
+
 1. Go to your repository Settings → Pages
 2. Set Source to "GitHub Actions"
 3. The workflow will automatically deploy the `src/` directory on push to `main`
@@ -308,12 +289,17 @@ Add to all HTML files before `</head>`:
 
 ```html
 <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script
+  async
+  src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
+></script>
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX');
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+  gtag("js", new Date());
+  gtag("config", "G-XXXXXXXXXX");
 </script>
 ```
 
@@ -322,15 +308,19 @@ Add to all HTML files before `</head>`:
 ## 🔧 Troubleshooting
 
 ### Issue: Cards not loading
+
 **Solution:** Check browser console for 404 errors. Ensure `img/` directory is present.
 
 ### Issue: Links don't work
+
 **Solution:** Verify file paths are relative. Avoid absolute paths like `/index.html`.
 
 ### Issue: localStorage not persisting
+
 **Solution:** Ensure HTTPS is enabled. Some browsers block localStorage on HTTP.
 
 ### Issue: CORS errors (if hosting on subdomain)
+
 **Solution:** Add CORS headers to your server configuration.
 
 ---

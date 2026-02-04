@@ -1,0 +1,9 @@
+name: eop
+
+services:
+  eop:
+    container_name: elevation-of-privilege
+    image: ghcr.io/letsdrinksometea/elevation-of-privilege:latest
+    restart: unless-stopped
+    ports:
+      - "3333:80"

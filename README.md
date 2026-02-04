@@ -12,7 +12,7 @@ A web-based implementation of the security threat modeling card game originally 
 
 ```bash
 # Clone the repository
-git clone <repo-url>
+git clone https://github.com/LetsDrinkSomeTea/elevation-of-privilege
 cd elevation-of-privilege
 
 # Start a local web server (choose one):
@@ -219,6 +219,7 @@ EoP/
 ### Automated CI/CD
 
 This repository includes GitHub Actions workflows for:
+
 - **CI Tests** (`ci.yml`) - Runs ESLint and tests on every push/PR
 - **Docker Builds** (`docker-build.yml`) - Builds and publishes to GitHub Container Registry
 - **GitHub Pages** (`jekyll-gh-pages.yml`) - Automatically deploys `src/` to GitHub Pages
@@ -248,11 +249,13 @@ The `jekyll-gh-pages.yml` workflow automatically deploys to GitHub Pages on push
 Simply deploy the `src/` directory as a static site:
 
 **Netlify:**
+
 - Connect your repo
 - Set publish directory to `src`
 - Deploy!
 
 **Vercel:**
+
 ```bash
 vercel --prod src
 ```
