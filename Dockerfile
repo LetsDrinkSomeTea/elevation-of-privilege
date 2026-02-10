@@ -4,8 +4,7 @@ FROM nginx:alpine
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD wget --quiet --tries=1 --spider http://127.0.0.1:80/ || exit 1
 
-# Copy source files
-COPY ./src/ /usr/share/nginx/html/
+EXPOSE 80
 
 # Configure nginx to serve the app
 RUN echo 'server { \
@@ -22,7 +21,7 @@ RUN echo 'server { \
     add_header X-XSS-Protection "1; mode=block" always; \
 }' > /etc/nginx/conf.d/default.conf
 
-# Run as non-root user for security
+# Run as non-root user
 RUN addgroup -g 1001 -S appuser && \
     adduser -u 1001 -S appuser -G appuser && \
     chown -R appuser:appuser /usr/share/nginx/html && \
@@ -33,6 +32,7 @@ RUN addgroup -g 1001 -S appuser && \
 
 USER appuser
 
-EXPOSE 80
+# Copy source files
+COPY ./src/ /usr/share/nginx/html/
 
 CMD ["nginx", "-g", "daemon off;"]
