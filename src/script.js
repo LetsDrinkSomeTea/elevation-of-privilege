@@ -4,7 +4,7 @@
  */
 
 import { suits, buildDeck, valueOrder } from './deck.js';
-import { shuffle, validatePlayerCount, validateSeed, getUrlParams as getParams, sanitizeInput } from './utils.js';
+import { distributeBalanced, validatePlayerCount, validateSeed, getUrlParams as getParams, sanitizeInput } from './utils.js';
 import { initLanguage, t, toggleLanguage, getCurrentLanguage } from './translations.js';
 import { updateCardCounter, updateUILanguage, showHelpModal, closeHelpModal } from './ui.js';
 
@@ -150,20 +150,8 @@ function initPlayerView() {
     
     document.getElementById('view-title').innerText = `${t('player')} ${player} ${t('of')} ${players} - ${t('seed')} ${sanitizeInput(seed)}`;
 
-    let shuffledDeck = shuffle([...allCards], seed);
-
-    const totalCards = shuffledDeck.length;
-    const baseCards = Math.floor(totalCards / players);
-    const extraCards = totalCards % players;
-
-    let start = 0;
-    for (let i = 1; i < player; i++) {
-        start += (i <= extraCards) ? baseCards + 1 : baseCards;
-    }
-    const myCardCount = (player <= extraCards) ? baseCards + 1 : baseCards;
-    const end = start + myCardCount;
-
-    let myHand = shuffledDeck.slice(start, end);
+    const playerHands = distributeBalanced([...allCards], seed, players);
+    let myHand = playerHands[player - 1];
 
     myHand.sort((a, b) => {
         if (a.suit !== b.suit) {

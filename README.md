@@ -137,9 +137,18 @@ The game uses a **3-view system**:
 
 ### Card Distribution Algorithm
 
-- Uses a **seeded pseudorandom number generator (LCG)** for deterministic shuffling
-- Same seed + player count = identical card distribution across all clients
-- No server communication needed - all clients independently compute the same shuffle
+The game uses a **balanced suit distribution algorithm** to ensure each player receives diverse threat categories:
+
+1. **Groups cards by suit** - Cards are organized into their STRIDE+P categories
+2. **Shuffles each suit separately** - Uses a seeded pseudorandom number generator (LCG) for each suit
+3. **Distributes in round-robin fashion** - Deals cards from all suits to ensure balance
+4. **Deterministic behavior** - Same seed + player count = identical distribution across all clients
+
+**Benefits:**
+- Each player gets cards from multiple threat types (typically all 6 suits)
+- Prevents clustering where one player gets all cards of one category
+- Maintains seeded shuffling for distributed gameplay (no server required)
+- All clients independently compute the same distribution
 
 ### STRIDE+Privacy Threat Categories
 

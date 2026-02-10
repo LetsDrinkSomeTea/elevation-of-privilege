@@ -105,3 +105,62 @@ export function getUrlParams(urlParams) {
         players: parseInt(urlParams.get('players'))
     };
 }
+
+/**
+ * Distributes cards to players with balanced suit distribution
+ * Groups cards by suit, shuffles each suit separately, then deals in round-robin fashion
+ * to ensure each player receives diverse threat categories
+ * @param {Array} cards - The deck of cards to distribute
+ * @param {string} seed - The seed string for reproducible shuffling
+ * @param {number} playerCount - The number of players
+ * @returns {Array} 2D array where result[playerIndex] contains that player's cards
+ */
+export function distributeBalanced(cards, seed, playerCount) {
+    // Group cards by suit
+    const suitGroups = {};
+    cards.forEach(card => {
+        if (!suitGroups[card.suit]) {
+            suitGroups[card.suit] = [];
+        }
+        suitGroups[card.suit].push(card);
+    });
+
+    // Shuffle each suit separately with seeded RNG
+    const suits = Object.keys(suitGroups).sort();
+    const seedNum = hashCode(seed);
+    
+    suits.forEach(suit => {
+        const rng = seededRandom(seedNum + suit.charCodeAt(0));
+        const suitCards = suitGroups[suit];
+        for (let i = suitCards.length - 1; i > 0; i--) {
+            const j = Math.floor(rng() * (i + 1));
+            [suitCards[i], suitCards[j]] = [suitCards[j], suitCards[i]];
+        }
+    });
+
+    // Initialize player hands
+    const playerHands = Array.from({ length: playerCount }, () => []);
+
+    // Track current index for each suit
+    const suitIndices = {};
+    suits.forEach(suit => suitIndices[suit] = 0);
+
+    // Distribute cards in round-robin fashion
+    let playerIndex = 0;
+    let cardsRemaining = cards.length;
+    
+    while (cardsRemaining > 0) {
+        // Try to give current player one card from any available suit
+        for (const suit of suits) {
+            if (suitIndices[suit] < suitGroups[suit].length) {
+                playerHands[playerIndex].push(suitGroups[suit][suitIndices[suit]]);
+                suitIndices[suit]++;
+                cardsRemaining--;
+                playerIndex = (playerIndex + 1) % playerCount;
+                break;
+            }
+        }
+    }
+
+    return playerHands;
+}
